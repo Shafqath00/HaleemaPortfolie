@@ -3,9 +3,19 @@ import Home from './pages/home'
 import ProcessPage from './pages/processPage'
 import './App.css'
 import FooterPage from './pages/footerPage'
+import Lenis from 'lenis'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  // Initialize Lenis
+  const lenis = new Lenis({
+    autoRaf: true,
+  });
+
+  // Listen for the scroll event and log the event data
+  lenis.on('scroll', (e) => {
+    // console.log(e);
+  });
 
   return (
     <>
