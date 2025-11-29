@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Quote } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
@@ -67,35 +67,44 @@ export default function FooterFutures() {
 
   const TestimonialCard = ({ testimonial, index }) => {
     const cardRef = useRef(null);
+    const [isMobile, setIsMobile] = useState(false);
 
+    // --- 1. DETECT SCREEN SIZE ---
+    useEffect(() => {
+      const checkScreenSize = () => {
+        // 1024px matches the 'lg' breakpoint used in your className hidden logic
+        setIsMobile(window.innerWidth < 1024);
+      };
+
+      checkScreenSize(); // Run immediately
+      window.addEventListener('resize', checkScreenSize); // Run on resize
+
+      return () => window.removeEventListener('resize', checkScreenSize);
+    }, []);
+
+    // --- 2. SETUP ANIMATIONS ---
     const { scrollYProgress } = useScroll({
       target: cardRef,
-      // Adjusted offset slightly to ensure animation finishes comfortably 
-      // by the time the element is centered or towards the top
       offset: ["start end", "center center"]
     });
 
     const direction = index % 2 === 0 ? 1 : -1;
 
-    /**
-     * FIX APPLIED HERE:
-     * Previously: [60 * direction, -60 * direction] -> Resulted in offset at the end.
-     * Now: [100 * direction, 0] -> Starts with offset, ends at 0 (aligned).
-     */
-    const y = useTransform(scrollYProgress, [0, 1], [100 * direction, 0]);
-    
-    // GPU-friendly opacity
-    const opacity = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
+    // These are the calculated animation values
+    const animatedY = useTransform(scrollYProgress, [0, 1], [100 * direction, 0]);
+    const animatedOpacity = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
 
-    // Use y directly (soft ease handled by Framer default or adding distinct spring if needed)
-    // Removed extra useTransform(y, v=>v) as it's redundant
-    
+    // --- 3. APPLY CONDITION ---
+    // If mobile, force y to 0 and opacity to 1. Otherwise, use the animation.
+    const y = isMobile ? 0 : animatedY;
+    const opacity = isMobile ? 1 : animatedOpacity;
+
     return (
       <motion.div
         ref={cardRef}
         style={{
-          y, // Applied the fix
-          opacity,
+          y,      // Uses the conditional value
+          opacity, // Uses the conditional value
           willChange: "transform, opacity",
         }}
         className={`flex ${testimonial.reverse ? "flex-col-reverse" : "flex-col"}  flex-1 gap-3 ${index >= 2 ? "hidden lg:flex" : ""
@@ -173,7 +182,6 @@ export default function FooterFutures() {
       </motion.div>
     );
   };
-
 
   return (
     <div className="w-full rounded-[36px] md:p-12 p-6 relative overflow-hidden">
