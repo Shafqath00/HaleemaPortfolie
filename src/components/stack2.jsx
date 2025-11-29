@@ -1,148 +1,99 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import { useRef } from "react";
 
-const ScrollingStackCards = () => {
-    const cardsContainerRef = useRef(null);
-    const cardsRef = useRef([]);
-    const [isMobile, setIsMobile] = useState(false);
+const cardsData = [
+    { bgColor: "#82c95e", color: "#0f151f", bgImg: "/assets/img/bg-1.jpg" },
+    { bgColor: "#d48740", color: "#0f151f", bgImg: "/assets/img/bg-2.jpg" },
+    { bgColor: "#ba8ad6", color: "#0f151f", bgImg: "/assets/img/bg-3.jpg" }
+];
 
-    const cardsData = [
-        { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: '#0f151f', bgColor: '#82c95e',bgImg:"/assets/img/bg-1.jpg" },
-        { bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: '#0f151f', bgColor: '#d48740',bgImg:"/assets/img/bg-2.jpg" },
-        { bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', color: '#0f151f', bgColor: '#ba8ad6',bgImg:"/assets/img/bg-3.jpg" }
-    ];
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    useEffect(() => {
-        const cardHeight = isMobile ? 700 : 600;
-        const offsetBottom = window.innerHeight - cardHeight;
-
-        const handleScroll = () => {
-            cardsRef.current.forEach((card, index) => {
-                if (!card || index === cardsRef.current.length - 1) return;
-
-                const nextCard = cardsRef.current[index + 1];
-                if (!nextCard) return;
-
-                const offsetTop = 20 + index * 20;
-                const nextCardRect = nextCard.getBoundingClientRect();
-
-                // Calculate the scroll percentage
-                const start = offsetTop;
-                const end = offsetBottom;
-                const current = nextCardRect.top;
-
-                let percentageY = (current - start) / (end - start);
-                percentageY = Math.max(0, Math.min(1, percentageY));
-
-                // Calculate scale and brightness
-                const toScale = 1 - (cardsRef.current.length - 1 - index) * 0.1;
-                const scale = 1 + (toScale - 1) * (1 - percentageY);
-                const brightness = 1 + (0.6 - 1) * (1 - percentageY);
-
-                const cardInner = card.querySelector('.card__inner');
-                if (cardInner) {
-                    cardInner.style.transform = `scale(${scale})`;
-                    cardInner.style.filter = `brightness(${brightness})`;
-                }
-            });
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Initial call
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isMobile]);
-
+export default function ScrollingStackCards() {
     return (
-        <div className="min-h-scree py-10">
-            <div className="max-w-6xl mx-auto px-4">
-                <div ref={cardsContainerRef} className="cards-container relative">
-                    {cardsData.map((cardData, index) => (
-                        <div
-                            key={index}
-                            ref={el => cardsRef.current[index] = el}
-                            className="card sticky"
-                            style={{
-                                top: '20px',
-                                paddingTop: `${20 + index * 20}px`,
-                                marginBottom: index === cardsData.length - 1 ? '0' : '20px'
-                            }}
-                        >
-                            <div className="card__inner duration-300 ease-out font-satoshi" >
-                                <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ height: isMobile ? '700px' : '600px' }}>
-                                    {/* Background */}
-                                    <div
-                                        className="absolute inset-0 "
-                                        style={{ backgroundColor: cardData.color }}
-                                    />
-
-                                    {/* Content */}
-                                    <div className="relative h-full overflow-hidden flex flex-col md:flex-row p-8 md:p-12">
-                                        <div className={` w-[600px]  opacity-30 blur-3xl rounded-[100%] h-[600px] absolute right-0 top-0`} style={{ backgroundColor: cardData.bgColor }}>
-
-                                        </div>
-                                        {/* Left side - Text content */}
-                                        <div className="flex-1 flex flex-col justify-between text-white z-10">
-                                            <div>
-                                                <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">
-                                                    Modernizing a Subscription Management Platform
-                                                </h2>
-                                                <p className="text-lg md:text-xl opacity-90 leading-relaxed mb-8">
-                                                    With user-centered approach, the goal was to create an intuitive
-                                                    interface for effortless financial management while
-                                                    incorporating gamification.
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <button className="bg-white text-gray-900 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-300">
-                                                    View case study
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Right side - Image and stats */}
-                                        <div className="flex-1 flex flex-col justify-end z-10 mt-8 md:mt-0 md:ml-8">
-                                            <div
-                                                className="rounded-xl mb-6 shadow-xl bg-cover bg-center bg-no-repeat"
-                                                style={{
-                                                    backgroundImage: `url(${cardData.bgImg})`,
-                                                    height: '300px'
-                                                }}
-                                            >
-                                            </div>
-
-                                            {/* Stats */}
-                                            <div className="flex gap-6 text-white">
-                                                <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                                    <p className="text-sm opacity-70 mb-1">Engagement</p>
-                                                    <p className="text-2xl font-bold">12 min</p>
-                                                </div>
-                                                <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                                    <p className="text-sm opacity-70 mb-1">User Satisfaction</p>
-                                                    <p className="text-2xl font-bold">4.5★</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                {/* Extra space for scrolling */}
-                {/* <div style={{ height: '100vh' }} /> */}
+        <div className="min-h-screen py-20">
+            <div className="max-w-5xl mx-auto px-4 space-y-10 relative">
+                {cardsData.map((card, index) => (
+                    <StackCard key={index} index={index} card={card} />
+                ))}
             </div>
         </div>
     );
-};
+}
 
-export default ScrollingStackCards;
+function StackCard({ index, card }) {
+    const ref = useRef(null);
+
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ["start end", "start center"],
+    });
+
+    const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
+    const brightness = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
+
+    const filterValue = useMotionTemplate`brightness(${brightness})`;
+
+    return (
+        <motion.div
+            ref={ref}
+            className="sticky top-20 will-change-transform"
+            style={{
+                paddingTop: index * 40,
+                scale,
+                filter: filterValue,
+            }}
+        >
+            <div
+                className="rounded-3xl overflow-hidden shadow-2xl relative"
+                style={{ height: "auto", background: card.color }}
+            >
+                {/* Blur/Glow */}
+                <div
+                    className="absolute inset-0 opacity-30 blur-3xl rounded-full"
+                    style={{
+                        backgroundColor: card.bgColor,
+                        top: 0,
+                        right: 0,
+                        width: "600px",
+                        height: "600px",
+                    }}
+                />
+
+                {/* Content */}
+                <div className="relative h-full flex flex-col md:flex-row md:p-10 p-6 text-white z-10">
+                    <div className="flex-1 flex flex-col justify-between">
+                        <div>
+                            <h2 className="md:text-3xl text-2xl font-bold mb-6">
+                                Modernizing a Subscription Management Platform
+                            </h2>
+                            <p className="md:text-lg text-base opacity-90 mb-8">
+                                With user-centered approach, the goal was to create an intuitive
+                                interface for effortless financial management while incorporating gamification.
+                            </p>
+                        </div>
+                        <button className="bg-white text-gray-900 px-8 py-3 rounded-full">
+                            View case study
+                        </button>
+                    </div>
+
+                    <div className="flex-1 flex flex-col justify-between mt-8 md:ml-8">
+                        <div
+                            className="rounded-xl mb-6 shadow-xl bg-cover bg-center md:h-[300px] h-[200px] bg-no-repeat"
+                            style={{ backgroundImage: `url(${card.bgImg})`, }}
+                        />
+                        <div className="flex gap-6">
+                            <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-4">
+                                <p className="text-sm opacity-70 mb-1">Engagement</p>
+                                <p className="text-2xl font-bold">12 min</p>
+                            </div>
+                            <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-4">
+                                <p className="text-sm opacity-70 mb-1">User Satisfaction</p>
+                                <p className="text-2xl font-bold">4.5★</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </motion.div>
+    );
+}
+

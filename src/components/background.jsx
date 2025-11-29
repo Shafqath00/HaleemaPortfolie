@@ -87,8 +87,8 @@ const TriangleBackground = () => {
   }, []);
 
   return (
-    <div className="w-full h-screen bg-[#111111] overflow-hidden ">
-      <div className="w-full h-full blur-2xl">
+    <div className="w-full h-screen bg-[#111111] flex justify-center items-center overflow-hidden ">
+      <div className="max-w-[1140px] h-[500px] blur-3xl">
         <canvas ref={canvasRef} className="w-full h-full block" />
       </div>
     </div>

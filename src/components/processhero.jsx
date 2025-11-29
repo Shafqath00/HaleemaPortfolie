@@ -12,7 +12,7 @@ export default function ProcessHero() {
             <div className="max-w-7xl mx-auto">
                 <div className="relative">
                     {/* Hero Content */}
-                    <div className="flex flex-col lg:flex-row lg:justify-between mb-12">
+                    <div className="flex flex-col lg:flex-row lg:justify-between mb-0 md:mb-12">
                         {/* Left Column - Text Content */}
                         <div className="overflow-hidden md:hidden mb-4">
                             <div className="flex gap-6 xl:gap-8">
@@ -72,17 +72,17 @@ export default function ProcessHero() {
                     </div>
 
                     {/* Image Boxes Section */}
-                    <div className="relative flex justify-between mt-12 lg:mt-16 h-[320px] md:h-[375px]">
+                    <div className="relative flex justify-between mt-0 md:mt-12 lg:mt-16 h-[320px] md:h-[375px]">
                         {/* Left Green Box */}
                         <div
-                            className="w-[45%] md:w-[400px] h-full rounded-[32px] hidden md:block md:rounded-[64px]"
+                            className="w-[45%] md:max-w-[500px] h-full rounded-[32px] hidden md:block md:rounded-[64px]"
                             style={{
                                 background: 'linear-gradient(234deg, rgb(210, 232, 200) 0%, rgb(180, 211, 165) 100%)'
                             }}
                         ></div>
                         {/* Right Image Box */}
                         <div
-                            className="absolute bottom-0 right-0 w-[100%] md:w-[500px] h-[320px] md:h-[515px] rounded-[32px] md:rounded-[64px] overflow-hidden p-6 pb-0 md:p-10 md:pb-0"
+                            className="absolute bottom-0 right-0 w-[100%] md:max-w-[650px] h-[320px] md:h-[515px] rounded-[32px] md:rounded-[64px] overflow-hidden p-6 pb-0 md:p-10 md:pb-0"
                             style={{
                                 background: 'linear-gradient(234deg, rgb(210, 232, 200) 0%, rgb(180, 211, 165) 100%)'
                             }}
