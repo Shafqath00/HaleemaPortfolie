@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Quote } from 'lucide-react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export default function FooterFutures() {
   const testimonials = [
@@ -64,36 +64,41 @@ export default function FooterFutures() {
       reverse: true
     }
   ];
+
   const TestimonialCard = ({ testimonial, index }) => {
     const cardRef = useRef(null);
 
-    // Much smoother offset
     const { scrollYProgress } = useScroll({
       target: cardRef,
-      offset: ["start 85%", "start 35%"]
+      // Adjusted offset slightly to ensure animation finishes comfortably 
+      // by the time the element is centered or towards the top
+      offset: ["start end", "center center"]
     });
 
-    // Minimal GPU-transform for best smoothness
     const direction = index % 2 === 0 ? 1 : -1;
 
-    // Smaller travel distance → smoother
-    const y = useTransform(scrollYProgress, [0, 1], [60 * direction, -60 * direction]);
+    /**
+     * FIX APPLIED HERE:
+     * Previously: [60 * direction, -60 * direction] -> Resulted in offset at the end.
+     * Now: [100 * direction, 0] -> Starts with offset, ends at 0 (aligned).
+     */
+    const y = useTransform(scrollYProgress, [0, 1], [100 * direction, 0]);
+    
+    // GPU-friendly opacity
+    const opacity = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
 
-    // GPU-friendly opacity (no filter)
-    const opacity = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
-
-    // Soft ease instead of spring (WAY smoother)
-    const smoothY = useTransform(y, (v) => v);
-
+    // Use y directly (soft ease handled by Framer default or adding distinct spring if needed)
+    // Removed extra useTransform(y, v=>v) as it's redundant
+    
     return (
       <motion.div
         ref={cardRef}
         style={{
-          y: smoothY,
+          y, // Applied the fix
           opacity,
           willChange: "transform, opacity",
         }}
-        className={`flex ${testimonial.reverse ? "flex-col-reverse" : "flex-col"} flex-1 gap-3 ${index >= 2 ? "hidden lg:flex" : ""
+        className={`flex ${testimonial.reverse ? "flex-col-reverse" : "flex-col"}  flex-1 gap-3 ${index >= 2 ? "hidden lg:flex" : ""
           }`}
       >
         {/* ---------- TEXT CARD ---------- */}
@@ -146,6 +151,7 @@ export default function FooterFutures() {
         >
           <img
             src={testimonial.image.bg}
+            alt="background"
             className="absolute top-0 w-full h-full object-cover"
           />
 
@@ -156,6 +162,7 @@ export default function FooterFutures() {
           <div className="relative p-8 w-full h-full flex items-center justify-center">
             <motion.img
               src={testimonial.image.logo}
+              alt="logo"
               className="w-full h-full object-contain drop-shadow-xl"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -169,15 +176,7 @@ export default function FooterFutures() {
 
 
   return (
-    <div
-      className="w-full rounded-[36px] md:p-12 p-6 relative overflow-hidden"
-    >
-      {/* Background decoration */}
-      {/* <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
-      </div> */}
-
+    <div className="w-full rounded-[36px] md:p-12 p-6 relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
