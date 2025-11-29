@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 const cardsData = [
@@ -10,7 +10,7 @@ const cardsData = [
 export default function ScrollingStackCards() {
     return (
         <div className="min-h-screen py-20">
-            <div className="max-w-5xl mx-auto px-4 space-y-10 relative">
+            <div className="max-w-5xl mx-auto px-4 space-y-20">
                 {cardsData.map((card, index) => (
                     <StackCard key={index} index={index} card={card} />
                 ))}
@@ -22,39 +22,38 @@ export default function ScrollingStackCards() {
 function StackCard({ index, card }) {
     const ref = useRef(null);
 
+    // Smoother scroll offsets 
     const { scrollYProgress } = useScroll({
         target: ref,
-        offset: ["start end", "start center"],
+        offset: ["start 90%", "start 40%"]
     });
 
-    const scale = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
-    const brightness = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
-
-    const filterValue = useMotionTemplate`brightness(${brightness})`;
+    // GPU-friendly transforms
+    const scale = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
+    const opacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
+    const y = useTransform(scrollYProgress, [0, 1], [40, 0]);
 
     return (
         <motion.div
             ref={ref}
-            className="sticky top-20 will-change-transform"
+            className="sticky top-20 pointer-events-none will-change-transform"
             style={{
-                paddingTop: index * 40,
+                paddingTop: index * 50,
                 scale,
-                filter: filterValue,
+                y,
+                opacity,
+                transformPerspective: 1000
             }}
         >
             <div
-                className="rounded-3xl overflow-hidden shadow-2xl relative"
-                style={{ height: "auto", background: card.color }}
+                className="rounded-3xl overflow-hidden shadow-xl relative pointer-events-auto"
+                style={{ background: card.color }}
             >
-                {/* Blur/Glow */}
+                {/* Soft glow (NOT inside scroll transforms) */}
                 <div
-                    className="absolute inset-0 opacity-30 blur-3xl rounded-full"
+                    className="absolute inset-0 opacity-20 blur-2xl"
                     style={{
                         backgroundColor: card.bgColor,
-                        top: 0,
-                        right: 0,
-                        width: "600px",
-                        height: "600px",
                     }}
                 />
 
@@ -67,7 +66,8 @@ function StackCard({ index, card }) {
                             </h2>
                             <p className="md:text-lg text-base opacity-90 mb-8">
                                 With user-centered approach, the goal was to create an intuitive
-                                interface for effortless financial management while incorporating gamification.
+                                interface for effortless financial management while incorporating
+                                gamification.
                             </p>
                         </div>
                         <button className="bg-white text-gray-900 px-8 py-3 rounded-full">
@@ -78,7 +78,7 @@ function StackCard({ index, card }) {
                     <div className="flex-1 flex flex-col justify-between mt-8 md:ml-8">
                         <div
                             className="rounded-xl mb-6 shadow-xl bg-cover bg-center md:h-[300px] h-[200px] bg-no-repeat"
-                            style={{ backgroundImage: `url(${card.bgImg})`, }}
+                            style={{ backgroundImage: `url(${card.bgImg})` }}
                         />
                         <div className="flex gap-6">
                             <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-4">
@@ -96,4 +96,3 @@ function StackCard({ index, card }) {
         </motion.div>
     );
 }
-

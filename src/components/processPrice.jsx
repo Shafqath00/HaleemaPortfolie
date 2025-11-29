@@ -1,5 +1,30 @@
 import React from 'react';
 import { Check } from 'lucide-react';
+import { useRef, useEffect } from "react";
+import { useInView, useMotionValue, useSpring } from "framer-motion";
+
+const Counter = ({ value, prefix = "", suffix = "" }) => {
+    const ref = useRef(null);
+    const motionValue = useMotionValue(0);
+    const springValue = useSpring(motionValue, { damping: 50, stiffness: 100 });
+    const isInView = useInView(ref, { once: true, margin: "-20px" });
+
+    useEffect(() => {
+        if (isInView) {
+            motionValue.set(value);
+        }
+    }, [isInView, value, motionValue]);
+
+    useEffect(() => {
+        return springValue.on("change", (latest) => {
+            if (ref.current) {
+                ref.current.textContent = `${prefix}${Math.round(latest)}${suffix}`;
+            }
+        });
+    }, [springValue, prefix, suffix]);
+
+    return <span ref={ref} />;
+};
 
 export default function PricingTestimonialSection() {
   const features = [
@@ -98,7 +123,7 @@ export default function PricingTestimonialSection() {
                     className="text-4xl md:text-5xl"
                     style={{ fontFamily: 'Crimson Pro, serif' }}
                   >
-                    $4,995
+                    <Counter value={4995} prefix="$" />
                   </p>
                   <p className="font-medium text-base md:text-lg">
                     /month billed yearly

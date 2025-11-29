@@ -147,7 +147,7 @@ function AnimatedColumn({ images, direction = "up", isAnimating = false }) {
                 className="flex flex-col gap-4"
                 animate={animateProps}
                 transition={{
-                    duration: 20,
+                    duration: 40,
                     repeat: Infinity,
                     ease: "linear",
                 }}
@@ -157,7 +157,7 @@ function AnimatedColumn({ images, direction = "up", isAnimating = false }) {
                         key={idx}
                         src={src}
                         alt=""
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-cover"
                         draggable={false}
                     />
                 ))}

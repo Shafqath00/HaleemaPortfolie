@@ -64,125 +64,102 @@ export default function FooterFutures() {
       reverse: true
     }
   ];
-
   const TestimonialCard = ({ testimonial, index }) => {
     const cardRef = useRef(null);
-    
-    // Track scroll progress for this specific card
+
+    // Much smoother offset
     const { scrollYProgress } = useScroll({
       target: cardRef,
-      offset: ["start end", "end start"]
+      offset: ["start 85%", "start 35%"]
     });
 
-    // Alternate direction: even indices go up, odd indices go down
+    // Minimal GPU-transform for best smoothness
     const direction = index % 2 === 0 ? 1 : -1;
-    
-    // Transform scroll progress to Y position with direction
-    const y = useTransform(
-      scrollYProgress,
-      [0, 1],
-      [150 * direction, -150 * direction]
-    );
-    
-    // Add spring physics for smoother animation
-    const smoothY = useSpring(y, {
-      stiffness: 100,
-      damping: 30,
-      restDelta: 0.001
-    });
 
-    // Opacity based on scroll position
-    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+    // Smaller travel distance → smoother
+    const y = useTransform(scrollYProgress, [0, 1], [60 * direction, -60 * direction]);
+
+    // GPU-friendly opacity (no filter)
+    const opacity = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
+
+    // Soft ease instead of spring (WAY smoother)
+    const smoothY = useTransform(y, (v) => v);
 
     return (
-      <motion.div 
+      <motion.div
         ref={cardRef}
-        style={{ y: smoothY, opacity }}
-        className={`flex ${testimonial.reverse ? 'flex-col-reverse' : 'flex-col'} flex-1 h-full gap-3 ${index >= 2 ? 'hidden lg:flex' : ''}`}
+        style={{
+          y: smoothY,
+          opacity,
+          willChange: "transform, opacity",
+        }}
+        className={`flex ${testimonial.reverse ? "flex-col-reverse" : "flex-col"} flex-1 gap-3 ${index >= 2 ? "hidden lg:flex" : ""
+          }`}
       >
-        {/* Text Card */}
-        <motion.div 
-          className="flex-1 flex flex-col justify-between p-6 md:p-8 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+        {/* ---------- TEXT CARD ---------- */}
+        <motion.div
+          className="flex-1 flex flex-col justify-between p-6 md:p-8 rounded-3xl shadow-md transition-transform duration-300 hover:scale-[1.015]"
           style={{ backgroundColor: testimonial.bgColor }}
-          whileHover={{ y: -5 }}
         >
           <div>
-            {testimonial.type === 'stat' ? (
+            {testimonial.type === "stat" ? (
               <>
                 <p className="font-bold leading-none" style={{ color: testimonial.color }}>
-                  <span className={`${testimonial.statSize} font-extrabold`} style={{ color: testimonial.color }}>
+                  <span className={`${testimonial.statSize} font-extrabold`}>
                     {testimonial.stat}
                   </span>
-                  {testimonial.unit && <span className="text-5xl font-bold">{testimonial.unit}</span>}
+                  {testimonial.unit && (
+                    <span className="text-5xl font-bold">{testimonial.unit}</span>
+                  )}
                 </p>
-                <p 
-                  className="text-2xl md:text-3xl font-semibold leading-snug mt-3"
-                  style={{ color: testimonial.color }}
-                >
+                <p className="text-2xl md:text-3xl font-semibold mt-3" style={{ color: testimonial.color }}>
                   {testimonial.description}
                 </p>
               </>
             ) : (
-              <p 
-                className="text-xl md:text-2xl font-medium leading-relaxed"
-                style={{ color: testimonial.color }}
-              >
+              <p className="text-xl md:text-2xl font-medium leading-relaxed" style={{ color: testimonial.color }}>
                 "{testimonial.text}"
               </p>
             )}
           </div>
 
           <div className="flex items-center gap-4 mt-6 pt-4 border-t-2" style={{ borderColor: `${testimonial.color}33` }}>
-            <div className="p-2 rounded-full bg-white bg-opacity-50">
-              <Quote size={28} style={{ color: testimonial.color }} strokeWidth={2.5} />
+            <div className="p-2 rounded-full bg-white/50">
+              <Quote size={28} style={{ color: testimonial.color }} strokeWidth={2.2} />
             </div>
             <div>
-              <p 
-                className="text-base font-bold leading-tight m-0"
-                style={{ color: testimonial.color }}
-              >
+              <p className="font-bold leading-tight" style={{ color: testimonial.color }}>
                 {testimonial.author}
               </p>
-              <p 
-                className="text-sm leading-tight m-0 mt-1 opacity-80"
-                style={{ color: testimonial.color }}
-              >
+              <p className="text-sm leading-tight opacity-80 mt-1" style={{ color: testimonial.color }}>
                 {testimonial.role}
               </p>
             </div>
           </div>
         </motion.div>
 
-        {/* Image Card */}
-        <motion.div 
-          className="h-[300px] relative flex items-center rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
-          whileHover={{ scale: 1.02 }}
+        {/* ---------- IMAGE CARD ---------- */}
+        <motion.div
+          className="h-[300px] relative flex items-center rounded-3xl overflow-hidden shadow-md"
+          whileHover={{ scale: 1.015 }}
+          transition={{ duration: 0.3 }}
         >
-          <img 
+          <img
             src={testimonial.image.bg}
-            alt="Background"
-            className="absolute top-0 w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/400x300/d2e8c8/666?text=Image';
-            }}
+            className="absolute top-0 w-full h-full object-cover"
           />
+
           {testimonial.image.overlay && (
-            <div 
-              className="absolute w-full h-full backdrop-blur-[1px]"
-              style={{ background: testimonial.image.overlay }}
-            ></div>
+            <div className="absolute w-full h-full" style={{ background: testimonial.image.overlay }} />
           )}
+
           <div className="relative p-8 w-full h-full flex items-center justify-center">
-            <motion.img 
+            <motion.img
               src={testimonial.image.logo}
-              alt="Logo"
-              className="w-full h-full object-contain drop-shadow-2xl"
-              initial={{ opacity: 0, scale: 0.8 }}
+              className="w-full h-full object-contain drop-shadow-xl"
+              initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 + index * 0.15, duration: 0.6 }}
-              onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/200x100/ffffff/666?text=Logo';
-              }}
+              transition={{ duration: 0.5 }}
             />
           </div>
         </motion.div>
@@ -190,8 +167,9 @@ export default function FooterFutures() {
     );
   };
 
+
   return (
-    <div 
+    <div
       className="w-full rounded-[36px] md:p-12 p-6 relative overflow-hidden"
     >
       {/* Background decoration */}
@@ -202,13 +180,13 @@ export default function FooterFutures() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="flex justify-center mb-16 md:mb-20"
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 
+          <h2
             className="text-center text-2xl md:text-5xl max-w-[600px] text-white "
             style={{ fontFamily: 'Crimson Pro, serif' }}
           >
@@ -220,9 +198,9 @@ export default function FooterFutures() {
         <div className="max-w-[1100px] mx-auto">
           <div className="flex flex-col lg:flex-row items-stretch gap-4 lg:h-[750px]">
             {testimonials.map((testimonial, index) => (
-              <TestimonialCard 
-                key={index} 
-                testimonial={testimonial} 
+              <TestimonialCard
+                key={index}
+                testimonial={testimonial}
                 index={index}
               />
             ))}
