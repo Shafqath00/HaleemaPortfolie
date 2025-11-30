@@ -1,5 +1,90 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Lightbulb, Code, Send } from 'lucide-react';
+import { motion, useInView } from "framer-motion";
+
+const StepItem = ({ step, index, setActiveImage, stepRef }) => {
+  const Icon = step.icon;
+  const descRef = useRef(null);
+  const isInView = useInView(descRef, { once: true, margin: '-20% 0px' });
+
+  return (
+    <div
+      ref={stepRef}
+      className="cursor-pointer transition-all duration-300 hover:translate-x-2 py-[150px]"
+      onMouseEnter={() => setActiveImage(step.image)}
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div
+          className="flex items-center gap-2 py-2"
+          style={{ borderColor: step.color }}
+        >
+          <Icon size={20} style={{ color: step.color }} strokeWidth={2} />
+          <p className="text-sm" style={{ color: 'rgb(219 219 219 / 70%)' }}>
+            {step.label}
+          </p>
+        </div>
+      </div>
+      <motion.div
+        ref={descRef}
+        initial={{ x: -80, opacity: 0 }}
+        animate={{
+          x: isInView ? 0 : -80,
+          opacity: isInView ? 1 : 0
+        }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+      >
+        <p className="text-2xl font-light leading-relaxed">
+          {step.description}
+        </p>
+      </motion.div>
+    </div>
+  );
+};
+
+const MobileStepItem = ({ step, index }) => {
+  const Icon = step.icon;
+  const itemRef = useRef(null);
+  const isInView = useInView(itemRef, { once: true, margin: '-20% 0px' });
+
+  return (
+    <motion.div
+      ref={itemRef}
+      initial={{ y: 50, opacity: 0 }}
+      animate={{
+        y: isInView ? 0 : 50,
+        opacity: isInView ? 1 : 0
+      }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div
+            className="flex items-center gap-2 border rounded-full px-4 py-2"
+            style={{ borderColor: step.color }}
+          >
+            <Icon size={20} style={{ color: step.color }} strokeWidth={2} />
+            <p className="text-sm" style={{ color: 'rgb(219 219 219 / 70%)' }}>
+              {step.label}
+            </p>
+          </div>
+        </div>
+        <p className="text-2xl font-light leading-normal mb-6">
+          {step.description}
+        </p>
+      </div>
+      <div className="rounded-2xl overflow-hidden bg-zinc-900">
+        <img
+          src={step.image}
+          alt={`${step.label} visualization`}
+          className="w-full h-auto"
+          onError={(e) => {
+            e.target.src = 'https://via.placeholder.com/600x400/1a1a1a/666?text=Process+Image';
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+};
 
 export default function ProcessSection() {
   const [activeImage, setActiveImage] = useState('/assets/img/3.png');
@@ -74,32 +159,15 @@ export default function ProcessSection() {
         <div className="hidden lg:flex gap-12">
           {/* Steps Column */}
           <div className="flex-1 space-y-8">
-            {steps.map((step, index) => {
-              const Icon = step.icon;
-              return (
-                <div
-                  key={index}
-                  ref={(el) => (stepRefs.current[index] = el)}
-                  className="cursor-pointer transition-all duration-300 hover:translate-x-2 py-[150px]"
-                  onMouseEnter={() => setActiveImage(step.image)}
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div 
-                      className="flex items-center gap-2 py-2"
-                      style={{ borderColor: step.color }}
-                    >
-                      <Icon size={20} style={{ color: step.color }} strokeWidth={2} />
-                      <p className="text-sm" style={{ color: 'rgb(219 219 219 / 70%)' }}>
-                        {step.label}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-2xl font-light leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              );
-            })}
+            {steps.map((step, index) => (
+              <StepItem
+                key={index}
+                step={step}
+                index={index}
+                setActiveImage={setActiveImage}
+                stepRef={(el) => (stepRefs.current[index] = el)}
+              />
+            ))}
           </div>
 
           {/* Image Column */}
@@ -119,39 +187,9 @@ export default function ProcessSection() {
 
         {/* Mobile View */}
         <div className="lg:hidden space-y-16">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            return (
-              <div key={index}>
-                <div className="mb-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div 
-                      className="flex items-center gap-2 border rounded-full px-4 py-2"
-                      style={{ borderColor: step.color }}
-                    >
-                      <Icon size={20} style={{ color: step.color }} strokeWidth={2} />
-                      <p className="text-sm" style={{ color: 'rgb(219 219 219 / 70%)' }}>
-                        {step.label}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-2xl font-light leading-normal mb-6">
-                    {step.description}
-                  </p>
-                </div>
-                <div className="rounded-2xl overflow-hidden bg-zinc-900">
-                  <img
-                    src={step.image}
-                    alt={`${step.label} visualization`}
-                    className="w-full h-auto"
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/600x400/1a1a1a/666?text=Process+Image';
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+          {steps.map((step, index) => (
+            <MobileStepItem key={index} step={step} index={index} />
+          ))}
         </div>
       </div>
     </div>

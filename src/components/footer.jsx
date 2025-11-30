@@ -32,7 +32,7 @@ export default function Footer() {
             >
                 <div className="flex flex-col gap-10 relative z-10 items-center">
                     {/* Animated Image Container */}
-                    <div className="relative  w-full max-w-6xl  rounded-[36px] md:rounded-full overflow-hidden">
+                    <div className="relative  w-full max-w-5xl  rounded-[36px] md:rounded-full overflow-hidden">
 
                         {/* animated columns (lowest layer) */}
                         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -84,7 +84,7 @@ export default function Footer() {
 
 
                     {/* Social Links */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-white text-xl w-full max-w-6xl">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-8 gap-2 text-white text-xl w-full max-w-6xl">
                         {socialLinks.map((link, index) => (
                             <a
                                 key={index}

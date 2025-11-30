@@ -57,7 +57,7 @@ export default function ScrollingStackCards() {
   });
 
   return (
-    <div className="min-h-[400vh] my-20" ref={container}>
+    <div className="min-h-[400vh] my-20 mx-3" ref={container}>
       {cardsData.map((card, index) => {
         // Calculate target scale logic
         const targetScale = 1 - ((cardsData.length - index) * 0.05);
