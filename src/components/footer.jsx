@@ -21,6 +21,30 @@ export default function Footer() {
     const handleEnter = () => setIsHovered(true);
     const handleLeave = () => setIsHovered(false);
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2,
+                delayChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 30, opacity: 0, filter: "blur(8px)" },
+        visible: {
+            y: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            transition: {
+                duration: 0.8,
+                ease: [0.25, 0.4, 0.25, 1]
+            }
+        }
+    };
+
     return (
         <div className="w-full">
             <div
@@ -42,7 +66,7 @@ export default function Footer() {
                                 <AnimatedColumn images={images} direction="up" isAnimating={isHovered} />
                             </div>
                         </div>
-------------
+                        ------------
                         {/* BLACK OVERLAY — FIXED */}
                         <div
                             className={`absolute inset-0 z-20 transition-opacity duration-700 ${isHovered ? "opacity-0" : ""
@@ -84,10 +108,17 @@ export default function Footer() {
 
 
                     {/* Social Links */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-8 gap-2 text-white text-xl w-full max-w-6xl">
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-10%" }}
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-8 gap-2 text-white text-xl w-full max-w-6xl"
+                    >
                         {socialLinks.map((link, index) => (
-                            <a
+                            <motion.a
                                 key={index}
+                                variants={itemVariants}
                                 href={link.url}
                                 className="flex items-center justify-between p-4 rounded-lg hover:bg-white/10 transition-colors group cursor-pointer"
                                 aria-label={link.name}
@@ -106,9 +137,9 @@ export default function Footer() {
                                 >
                                     <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
                                 </svg>
-                            </a>
+                            </motion.a>
                         ))}
-                    </div>
+                    </motion.div>
 
                     <p className="text-white text-center mt-8">
                         Nicey © 2025. Designed by JellyLabs

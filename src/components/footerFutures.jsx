@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Quote } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
 export default function FooterFutures() {
   const testimonials = [
@@ -68,6 +68,7 @@ export default function FooterFutures() {
   const TestimonialCard = ({ testimonial, index }) => {
     const cardRef = useRef(null);
     const [isMobile, setIsMobile] = useState(false);
+    const isInView = useInView(cardRef, { once: true, margin: "-10%" });
 
     // --- 1. DETECT SCREEN SIZE ---
     useEffect(() => {
@@ -94,19 +95,31 @@ export default function FooterFutures() {
     const animatedY = useTransform(scrollYProgress, [0, 1], [100 * direction, 0]);
     const animatedOpacity = useTransform(scrollYProgress, [0, 1], [0.85, 1]);
 
-    // --- 3. APPLY CONDITION ---
-    // If mobile, force y to 0 and opacity to 1. Otherwise, use the animation.
-    const y = isMobile ? 0 : animatedY;
-    const opacity = isMobile ? 1 : animatedOpacity;
+    // Mobile entrance variants
+    const mobileVariants = {
+      hidden: { y: 30, opacity: 0, filter: "blur(8px)" },
+      visible: {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        transition: {
+          duration: 0.8,
+          ease: [0.25, 0.4, 0.25, 1]
+        }
+      }
+    };
 
     return (
       <motion.div
         ref={cardRef}
         style={{
-          y,      // Uses the conditional value
-          opacity, // Uses the conditional value
+          y: isMobile ? undefined : animatedY,
+          opacity: isMobile ? undefined : animatedOpacity,
           willChange: "transform, opacity",
         }}
+        initial={isMobile ? "hidden" : undefined}
+        animate={isMobile ? (isInView ? "visible" : "hidden") : undefined}
+        variants={isMobile ? mobileVariants : undefined}
         className={`flex ${testimonial.reverse ? "flex-col-reverse" : "flex-col"}  flex-1 gap-3 ${index >= 2 ? "hidden lg:flex" : ""
           }`}
       >
@@ -183,22 +196,50 @@ export default function FooterFutures() {
     );
   };
 
+  const headerRef = useRef(null);
+  const isHeaderInView = useInView(headerRef, { once: true, margin: "-10%" });
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 30, opacity: 0, filter: "blur(8px)" },
+    visible: {
+      y: 0,
+      opacity: 1,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 0.4, 0.25, 1]
+      }
+    }
+  };
+
   return (
     <div className="w-full rounded-[36px] md:p-12 p-6 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div ref={headerRef} className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           className="flex justify-center mb-16 md:mb-20"
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          variants={containerVariants}
+          initial="hidden"
+          animate={isHeaderInView ? "visible" : "hidden"}
         >
-          <h2
+          <motion.h2
+            variants={itemVariants}
             className="text-center text-2xl md:text-5xl max-w-[600px] text-white "
             style={{ fontFamily: 'Crimson Pro, serif' }}
           >
             Relied upon by a Fresh Generation of Companies
-          </h2>
+          </motion.h2>
         </motion.div>
 
         {/* Testimonials Grid */}

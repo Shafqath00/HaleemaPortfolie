@@ -1,14 +1,38 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from "motion/react";
+import { useState, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from "motion/react";
 
 export default function FAQAccordion() {
   const [openItems, setOpenItems] = useState({});
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-20px" });
 
   const toggleItem = (index) => {
     setOpenItems(prev => ({
       ...prev,
       [index]: !prev[index]
     }));
+  };
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1
+      }
+    }
+  };
+  const itemVariants = {
+    hidden: { y: 30, opacity: 0, filter: "blur(8px)" },
+    visible: {
+      y: 0,
+      opacity: 1,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 0.4, 0.25, 1]
+      }
+    }
   };
 
   const faqData = [
@@ -27,17 +51,24 @@ export default function FAQAccordion() {
   ];
 
   return (
-    <div className="flex justify-center items-center md:p-8 p-5">
+    <div ref={ref} className="flex justify-center items-center md:p-8 p-5">
       <div className="w-full max-w-7xl">
         <div className="">
-          <div className="flex flex-col gap-12 text-white">
+          <motion.div
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            variants={containerVariants}
+            className="flex flex-col gap-12 text-white"
+          >
             <div className="text-center md:text-5xl text-3xl ">
-              <p>Common Queries Answered</p>
+              <motion.p 
+                variants={itemVariants}
+              >Common Queries Answered</motion.p>
             </div>
 
             <div className="flex flex-col gap-9">
               {faqData.map((faq, index) => (
-                <div key={index} className="flex flex-col gap-3">
+                <motion.div variants={itemVariants} key={index} className="flex flex-col gap-3">
                   <div
                     className="flex justify-between items-start text-xl cursor-pointer hover:opacity-80 transition-opacity"
                     onClick={() => toggleItem(index)}
@@ -70,10 +101,10 @@ export default function FAQAccordion() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

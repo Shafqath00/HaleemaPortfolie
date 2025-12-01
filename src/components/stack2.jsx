@@ -6,7 +6,7 @@ const cardsData = [
     bgColor: "#0f151f",
     title: "Modernizing a Subscription Management Platform",
     description: "With a user-centered approach, the goal was to create an intuitive interface for effortless financial management while incorporating gamification elements.",
-    bgImg: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+    bgImg: "https://framerusercontent.com/images/82V0lDZt5IN8w9i1157kfT8pSU.jpg?scale-down-to=1024&width=6000&height=4000",
     stats: [
       { label: "Engagement", value: "12 min" },
       { label: "User Satisfaction", value: "4.5*" }
@@ -17,7 +17,7 @@ const cardsData = [
     bgColor: "#0f151f",
     title: "Reimagining Online Shopping Experience",
     description: "Reimagining the online shopping journey with seamless navigation, personalized recommendations, and a streamlined checkout process.",
-    bgImg: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    bgImg: "https://framerusercontent.com/images/8ZlsEfjDITR5nOu3Yn61F22cbg.jpg?scale-down-to=1024&width=10000&height=6667",
     stats: [
       { label: "Conversion Rate", value: "+25%" },
       { label: "Avg Order Value", value: "$85" }
@@ -28,7 +28,7 @@ const cardsData = [
     bgColor: "#0f151f",
     title: "Healthcare Data Monitoring Dashboard",
     description: "Designing a comprehensive platform for healthcare professionals to monitor patient data, track metrics, and make informed decisions.",
-    bgImg: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
+    bgImg: "https://framerusercontent.com/images/Y1hHthCTPz6YNLIhonp2E5s5WU.jpg?scale-down-to=1024&width=6000&height=4558",
     stats: [
       { label: "Efficiency", value: "+40%" },
       { label: "Error Reduction", value: "95%" }
@@ -39,12 +39,12 @@ const cardsData = [
     bgColor: "#0f151f",
     title: "Secure Mobile Banking Application",
     description: "Creating a secure and intuitive mobile experience that empowers users to manage their finances on-the-go with confidence.",
-    bgImg: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80",
+    bgImg: "https://framerusercontent.com/images/UlzZi7Dd7txMrOquJLbf9wyEiig.jpg?scale-down-to=1024&width=3840&height=2160",
     stats: [
       { label: "Active Users", value: "1M+" },
       { label: "App Store Rating", value: "4.8" }
     ],
-    color: "#82c95e"
+    color: "#0f6499"
   },
 ];
 
@@ -57,11 +57,11 @@ export default function ScrollingStackCards() {
   });
 
   return (
-    <div className="min-h-[400vh] my-20 mx-3" ref={container}>
+    <div className="relative min-h-[400vh] my-20 mx-3" ref={container}>
       {cardsData.map((card, index) => {
         // Calculate target scale logic
         const targetScale = 1 - ((cardsData.length - index) * 0.05);
-        
+
         return (
           <StackCard
             key={index}
@@ -89,12 +89,12 @@ function StackCard({ index, card, progress, range, targetScale }) {
         // PERFORMANCE FIXES:
         // 1. will-change-transform: Tells browser this element changes shape
         // 2. transform-gpu: Forces hardware acceleration
-        className="relative max-w-5xl rounded-4xl p-8 md:p-10 flex flex-col md:flex-row gap-12 overflow-hidden shadow-2xl will-change-transform transform-gpu"
+        className="relative max-w-5xl rounded-2xl p-5 md:p-10 flex flex-col md:flex-row gap-5 md:gap-12 overflow-hidden shadow-2xl will-change-transform transform-gpu"
         style={{
           backgroundColor: card.bgColor,
           scale,
           // Use calc for top to avoid layout shifts, but top is not animated so this is fine
-          top: `calc(-5vh + ${index * 25}px)`, 
+          top: `calc(-5vh + ${index * 25}px)`,
           transformOrigin: 'top',
         }}
       >
@@ -103,9 +103,9 @@ function StackCard({ index, card, progress, range, targetScale }) {
            Changed to 'hidden md:block' to only show on desktop.
            If you MUST have it on mobile, reduce blur-3xl to blur-lg.
         */}
-        <div 
-            className="hidden md:block absolute top-0 right-0 w-[600px] h-[600px] blur-3xl opacity-15 rounded-full pointer-events-none" 
-            style={{ backgroundColor: card.color }} 
+        <div
+          className="hidden md:block absolute top-0 right-0 w-[600px] h-[600px] blur-3xl opacity-15 rounded-full pointer-events-none"
+          style={{ backgroundColor: card.color }}
         />
 
         {/* Left Content */}

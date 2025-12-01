@@ -21,7 +21,7 @@ export default function LogoLoop() {
 
         <div className="overflow-hidden">
           <motion.div
-            className="flex  md:gap-32 gap-12 items-center"
+            className="flex  md:gap-20 gap-12 items-center"
             animate={{ x: ["0%", "-100%"] }}
             transition={{
               repeat: Infinity,
@@ -31,13 +31,13 @@ export default function LogoLoop() {
           >
             {[...logos, ...logos].map((logo, index) => (
               <div key={index} className="flex-shrink-0 group">
-                <div className="relative rounded-full p-6 w-[80px] h-[80px] shadow-xl bg-black overflow-hidden">
+                <div className="relative rounded-lg p-6 w-[60px] h-[60px] shadow-xl bg-black overflow-hidden">
                   <div className="absolute inset-0 rounded-full group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="relative w-full h-full flex items-center justify-center">
                     <img
                       src={logo}
                       alt="brand"
-                      className="max-w-[50px] max-h-[50px] object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 group-hover:scale-105"
+                      className="max-w-[40px]  max-h-[40px] object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 group-hover:scale-105"
                     />
                   </div>
                 </div>

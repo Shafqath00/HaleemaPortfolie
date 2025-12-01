@@ -73,7 +73,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-2xl font-satoshi md:text-4xl font-extrabold leading-tight mb-4 max-w-[550px] text-transparent bg-clip-text"
+                    className="text-3xl font-satoshi md:text-4xl font-extrabold leading-tight mb-4 max-w-[550px] text-transparent bg-clip-text"
                     style={{
                         background:
                             "radial-gradient(61% 200% at 39.7% 21.9%, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.32) 100%)",

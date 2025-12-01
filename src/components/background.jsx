@@ -19,9 +19,9 @@ export default function TriangleBackground() {
 
     // Layered depth count
     const LAYERS = [
-      { count: 10, speed: 2.3, size: [40, 80],  },  // Background
-      { count: 10, speed: 2.6, size: [120, 220],  }, // Mid
-      { count: 10, speed: 2.0, size: [150, 250],  },  // Foreground
+      { count: 10, speed: 4.0, size: [40, 80], opacity: 1 },  // Background
+      { count: 10, speed: 4.5, size: [120, 220], opacity: 1 }, // Mid
+      { count: 10, speed: 3.5, size: [150, 250], opacity: 1 },  // Foreground
     ];
 
     const COLORS = ["#5e60ce", "#4361ee", "#4cc9f0", "#4895ef"];
@@ -88,17 +88,10 @@ export default function TriangleBackground() {
         ctx.rotate(this.angle);
 
         const opacity =
-          this.layer.opacity * this.opacityPulse * (this.layer.speed + 0.4);
+          (this.layer.opacity ?? 1) * this.opacityPulse * (this.layer.speed + 0.4);
 
-        // Glow effect (cheap gradient)
-        const gradient = ctx.createRadialGradient(
-          0, 0, this.size * 0.1,
-          0, 0, this.size * 0.9
-        );
-        gradient.addColorStop(0, this.color + "88");
-        gradient.addColorStop(1, "transparent");
-
-        ctx.fillStyle = gradient;
+        // Solid color for bright effect (no glow/gradient)
+        ctx.fillStyle = this.color;
 
         ctx.beginPath();
         ctx.moveTo(0, -this.size / 2);
@@ -106,7 +99,7 @@ export default function TriangleBackground() {
         ctx.lineTo(this.size / 2, this.size / 2);
         ctx.closePath();
 
-        ctx.globalAlpha = opacity;
+        ctx.globalAlpha = opacity > 1 ? 1 : opacity;
         ctx.fill();
         ctx.restore();
       }
@@ -128,7 +121,7 @@ export default function TriangleBackground() {
     // Visibility optimization
     const observer = new IntersectionObserver(
       ([entry]) => (isVisible = entry.isIntersecting),
-      { threshold: 0.1 }
+      { threshold: 0.5 }
     );
     observer.observe(canvas);
 
@@ -168,7 +161,7 @@ export default function TriangleBackground() {
   }, []);
 
   return (
-    <div className="w-full h-screen bg-[#111] flex justify-center blur-3xl  items-center overflow-hidden">
+    <div className=" max-w-7xl h-screen bg-[#111111] flex justify-center blur-3xl items-center overflow-hidden">
       <canvas ref={canvasRef} className="max-w-7xl h-[500px] block" />
     </div>
   );

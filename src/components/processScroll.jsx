@@ -7,6 +7,19 @@ const StepItem = ({ step, index, setActiveImage, stepRef }) => {
   const descRef = useRef(null);
   const isInView = useInView(descRef, { once: true, margin: '-20% 0px' });
 
+  const itemVariants = {
+    hidden: { y: 30, opacity: 0, filter: "blur(8px)" },
+    visible: {
+      y: 0,
+      opacity: 1,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 0.4, 0.25, 1]
+      }
+    }
+  };
+
   return (
     <div
       ref={stepRef}
@@ -26,12 +39,9 @@ const StepItem = ({ step, index, setActiveImage, stepRef }) => {
       </div>
       <motion.div
         ref={descRef}
-        initial={{ x: -80, opacity: 0 }}
-        animate={{
-          x: isInView ? 0 : -80,
-          opacity: isInView ? 1 : 0
-        }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+        variants={itemVariants}
       >
         <p className="text-2xl font-light leading-relaxed">
           {step.description}
@@ -46,15 +56,25 @@ const MobileStepItem = ({ step, index }) => {
   const itemRef = useRef(null);
   const isInView = useInView(itemRef, { once: true, margin: '-20% 0px' });
 
+  const itemVariants = {
+    hidden: { y: 30, opacity: 0, filter: "blur(8px)" },
+    visible: {
+      y: 0,
+      opacity: 1,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 0.4, 0.25, 1]
+      }
+    }
+  };
+
   return (
     <motion.div
       ref={itemRef}
-      initial={{ y: 50, opacity: 0 }}
-      animate={{
-        y: isInView ? 0 : 50,
-        opacity: isInView ? 1 : 0
-      }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={itemVariants}
     >
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-6">
@@ -173,10 +193,14 @@ export default function ProcessSection() {
           {/* Image Column */}
           <div className="flex-1 sticky top-24 h-fit">
             <div className="rounded-2xl overflow-hidden bg-zinc-900">
-              <img
+              <motion.img
+                key={activeImage}
+                initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                transition={{ duration: 0.5 }}
                 src={activeImage}
                 alt="Process visualization"
-                className="w-full h-auto transition-opacity duration-500"
+                className="w-full h-auto"
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/600x400/1a1a1a/666?text=Process+Image';
                 }}

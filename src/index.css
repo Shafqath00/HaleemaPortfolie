@@ -3,3 +3,7 @@
 @theme {
     --font-satoshi: 'Satoshi-Variable', 'Satoshi-Regular', sans-serif;
 }
+
+body {
+    overflow-x: hidden;
+}
