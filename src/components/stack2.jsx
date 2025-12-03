@@ -104,7 +104,7 @@ function StackCard({ index, card, progress, range, targetScale }) {
            If you MUST have it on mobile, reduce blur-3xl to blur-lg.
         */}
         <div
-          className="hidden md:block absolute top-0 right-0 w-[600px] h-[600px] blur-3xl opacity-15 rounded-full pointer-events-none"
+          className="hidden md:block absolute top-0 right-0 w-[600px] h-[600px] blur-3xl opacity-20 rounded-full pointer-events-none"
           style={{ backgroundColor: card.color }}
         />
 

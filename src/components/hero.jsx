@@ -42,7 +42,7 @@ export default function Hero() {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center md:hidden"
+                        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 flex flex-col items-center justify-center md:hidden"
                     >
                         <ul className="flex flex-col gap-8 text-center text-2xl font-medium text-gray-300">
                             <li className="hover:text-white transition"><a href="#" onClick={toggleMenu}>Home</a></li>

@@ -14,9 +14,6 @@ export default function TriangleBackground() {
 
     resizeCanvas();
 
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
-
     // Layered depth count
     const LAYERS = [
       { count: 10, speed: 4.0, size: [40, 80], opacity: 1 },  // Background
@@ -36,8 +33,8 @@ export default function TriangleBackground() {
         this.size = rand(minSize, maxSize);
 
         // Position
-        this.x = rand(0, WIDTH);
-        this.y = rand(0, HEIGHT);
+        this.x = rand(0, canvas.width);
+        this.y = rand(0, canvas.height);
 
         // Movement
         this.vx = rand(-1, 1) * layer.speed;
@@ -76,10 +73,10 @@ export default function TriangleBackground() {
         }
 
         // Bounds wrap instead of bounce
-        if (this.x < -200) this.x = WIDTH + 200;
-        if (this.x > WIDTH + 200) this.x = -200;
-        if (this.y < -200) this.y = HEIGHT + 200;
-        if (this.y > HEIGHT + 200) this.y = -200;
+        if (this.x < -200) this.x = canvas.width + 200;
+        if (this.x > canvas.width + 200) this.x = -200;
+        if (this.y < -200) this.y = canvas.height + 200;
+        if (this.y > canvas.height + 200) this.y = -200;
       }
 
       draw() {
@@ -128,7 +125,7 @@ export default function TriangleBackground() {
     const animate = (t) => {
       if (isVisible && t - lastTime > interval) {
         ctx.fillStyle = "rgba(17,17,17,0.22)";
-        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         triangles.forEach((tri) => {
           tri.update();
@@ -161,8 +158,8 @@ export default function TriangleBackground() {
   }, []);
 
   return (
-    <div className=" max-w-7xl h-screen bg-[#111111] flex justify-center blur-3xl items-center overflow-hidden">
-      <canvas ref={canvasRef} className="max-w-7xl h-[500px] block" />
+    <div className="max-w-[1080px] h-[500px] blur-3xl">
+      <canvas ref={canvasRef} className="w-full h-full" />
     </div>
   );
 }
